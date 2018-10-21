@@ -42,7 +42,14 @@ for pattern in config["patterns"]:
             data[result] = m_time
 
             # archive with 7zip
-            process = Popen("7z a {}.zip {}".format(os.path.normpath(config["archive_directory"] + "/" + result), result), stdin=PIPE, stdout=PIPE)
+            process = Popen(
+                "{} a {}.zip {}".format(
+                    config["7z_path"],
+                    os.path.normpath(config["archive_directory"] + "/" + result),
+                    result),
+                stdin=PIPE,
+                stdout=PIPE,
+                shell=True)
 
             out, err = process.communicate()
             logging.debug(out)
