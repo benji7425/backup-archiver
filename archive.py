@@ -17,7 +17,7 @@ for pattern in patterns:
 
     for result in results:
         m_time = os.path.getmtime(result)
-        if "result" not in data or ("result" in data and data[result] < m_time):
+        if result not in data or (result in data and data[result] < m_time):
             data[result] = m_time
             subprocess.call("7z a {}.zip {}".format(os.path.normpath(out_dir + "/" + result), result))
 
