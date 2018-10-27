@@ -43,7 +43,7 @@ for pattern in config["patterns"]:
 
             # archive with 7zip
             process = Popen(
-                "{} a {}.zip {}".format(
+                "{} a \"{}.zip\" \"{}\"".format(
                     config["7z_path"],
                     os.path.normpath(config["archive_directory"] + "/" + result),
                     result),
