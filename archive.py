@@ -58,11 +58,11 @@ for root, dirs, files in walk(root_dir):
 
         logging.debug("Resolved include paths {}".format(include_paths))
 
-        for path in include_paths:
-            rel_path = relpath(path, root)
-            if rel_path in dirs:
-                dirs.remove(rel_path)
-                logging.debug("Ignoring subdirs in '{}' as it's a backup dir itself".format(dir))
+    for path in paths:
+        rel_path = relpath(join(root_dir, path), join(root_dir, root))
+        if rel_path in dirs:
+            dirs.remove(rel_path)
+            logging.debug("Ignoring subdirs in '{}' as it's a backup dir itself".format(join(root_dir, path)))
         
 logging.info("Finished scanning directories")
 logging.debug("Found the following paths for backup: {}".format(paths))
