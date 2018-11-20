@@ -1,6 +1,0 @@
-{
-    "7z_path": "7z",
-    "data_file": "./data.json",
-    "archive_directory": "./archives",
-    "patterns": ["env/*/"]
-}

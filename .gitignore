@@ -1,5 +1,6 @@
 .vscode
 data.json
+config.json
 log
 
 # Created by https://www.gitignore.io/api/python

@@ -1,0 +1,7 @@
+{
+    "7z_path": "7z",
+    "data_file": "./data.json",
+    "archive_directory": "C:\\backup-archives",
+    "root_search_dir": "C:\\my-files",
+    "manifest_file_name": "backup.yml"
+}

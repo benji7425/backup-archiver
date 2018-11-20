@@ -1,0 +1,9 @@
+include:
+- documents/*
+- pictures/*
+- Include/*
+
+exclude:
+- pictures/neighbors-dog/*
+- pictures/*.raw
+- Include/abstract.h
