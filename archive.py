@@ -11,11 +11,16 @@ config = {}
 data = {}
 
 py_dir = dirname(realpath(__file__))
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
 logging.basicConfig(
-    filename=join(py_dir, "log"),
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)-8s %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S")
+    datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(join(py_dir, "log")),
+        stream_handler
+    ])
 
 # load the config file
 with open("config.json", "r") as config_file:
@@ -97,6 +102,7 @@ for path in paths:
     else:
         logging.debug("No updates found for '{}'".format(path))
 
+logging.info("Finished checking directories and updating archives")
 logging.debug("Writing updated modifed time data back to file")
 # write back the data file
 with open(config["data_file"], "w") as file:
