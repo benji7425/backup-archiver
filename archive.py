@@ -26,8 +26,8 @@ if exists(config["data_file"]):
     with open(config["data_file"], "r") as file:
         data = json.load(file)
 
-root_dir = config["root_dir"]
-manifest_name = "backup.yml"
+root_dir = config["root_search_dir"]
+manifest_name = config["manifest_file_name"]
 paths = []
 
 logging.debug("=== BEGIN ===")
