@@ -18,7 +18,7 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
-        logging.FileHandler(join(py_dir, "log")),
+        logging.FileHandler(join(py_dir, "log"), encoding="utf-8"),
         stream_handler
     ])
 
@@ -57,7 +57,7 @@ for root, dirs, files in walk(root_dir):
         get_glob_paths = lambda key: [normpath(glob_path) for glob_paths in [glob.glob(get_normpath(pattern)) for pattern in patterns[key]] for glob_path in glob_paths]
 
         exclude_paths = get_glob_paths("exclude") if "exclude" in patterns else []
-        include_paths = [relpath(get_normpath(path), root_dir) for path in get_glob_paths("include") if path not in exclude_paths]
+        include_paths = [relpath(get_normpath(path), root_dir) for path in get_glob_paths("include") if (not re.search("\.\w+$", path) and path not in exclude_paths)]
 
         paths += include_paths
 
