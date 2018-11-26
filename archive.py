@@ -10,15 +10,13 @@ import re
 config = {}
 
 py_dir = dirname(realpath(__file__))
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
         logging.FileHandler(join(py_dir, "log"), encoding="utf-8"),
-        stream_handler
+        logging.StreamHandler()
     ])
 
 # load the config file
@@ -73,17 +71,16 @@ for path in paths:
     original_path = join(root_dir, path)
     original_m_time = getmtime(original_path)  # get the last modified time
     archive_path = join(config["archive_directory"], path)
-    archive_m_time = getmtime(archive_path + ".zip") if isfile(archive_path + ".zip") else - 1
+    archive_m_time = getmtime(archive_path + ".7z") if isfile(archive_path + ".7z") else - 1
     
     if(original_m_time > archive_m_time):
         logging.debug("Updating archive for path {}".format(path))
 
         # archive with 7zip
         process = Popen(
-            "{} a \"{}.zip\" \"{}\"".format(
-                config["7z_path"],
-                normpath(archive_path), # target path
-                normpath(original_path)), # source path
+            config["archive_command"].format(
+                archive = normpath(archive_path),
+                directory = normpath(original_path)),
             stdin=PIPE,
             stdout=PIPE,
             shell=True)
