@@ -15,7 +15,7 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     handlers=[
-        logging.FileHandler(join(py_dir, "log"), encoding="utf-8"),
+        logging.FileHandler(join(py_dir, "debug.log"), encoding="utf-8"),
         logging.StreamHandler()
     ])
 
