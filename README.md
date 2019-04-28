@@ -15,12 +15,16 @@ Archives specified glob pattern results that have been modified since the last r
 ## Getting started
 ### Prerequisites
 - [Python 3.6+](https://www.python.org/) installed
+- [Pipenv](https://pipenv.readthedocs.io/en/latest/) pip module installed
 - [7zip](https://www.7-zip.org/download.html) (Windows) or [p7zip](http://p7zip.sourceforge.net/) (Linux) installed
 
 ### Setup
-- `pip install -r requirements.txt` as usual
-- `python main.py`
-- Configure your settings in config.json
+- Configure your settings in config.json (see [config.json.sample](./config.json.sample) for an example)
+- Place *backup.yml* manifests underneath your root directory (see [backup.yml.sample](./backup.yml.sample) for an example)
+
+- Install dependencies with `pipenv install`
+- Run manually with `pipenv run main.py`  
+OR
 - Run with your desired task scheduler (I use [cron](https://en.wikipedia.org/wiki/Cron))
 
 This script uses [subprocess](https://docs.python.org/3.6/library/subprocess.html) to interact with 7zip. You will need to make sure you have 7zip installed on your machine in order for this script to be able to use it.
