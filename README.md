@@ -9,18 +9,15 @@ Archives specified glob pattern results that have been modified since the last r
 ## Use cases
 - You want to back up your files but don't want each file to be backed up individually
 
-## Examples
-- See [config.json.sample](./config-json.sample) for a sample configuration
-
 ## Getting started
 ### Prerequisites
-- [Python 3.6+](https://www.python.org/) installed
+- [Python 3.6](https://www.python.org/) installed
 - [Pipenv](https://pipenv.readthedocs.io/en/latest/) pip module installed
 - [7zip](https://www.7-zip.org/download.html) (Windows) or [p7zip](http://p7zip.sourceforge.net/) (Linux) installed
 
 ### Setup
-- Configure your settings in config.json (see [config.json.sample](./config.json.sample) for an example)
-- Place *backup.yml* manifests underneath your root directory (see [backup.yml.sample](./backup.yml.sample) for an example)
+- Configure your settings in config.json (see [sample.config.json](./sample.config.json) for an example)
+- Place *backup.yml* manifests underneath your root directory (see [sample.backup.yml](./sample.backup.yml) for an example)
 
 - Install dependencies with `pipenv install`
 - Run manually with `pipenv run main.py`  
