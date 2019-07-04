@@ -57,4 +57,4 @@ There are a couple of rules.
 - [7zip](https://www.7-zip.org/download.html)
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details
+This project is licensed under the The Unlicense - see the [LICENSE](./LICENSE) file for details
