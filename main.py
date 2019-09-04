@@ -1,16 +1,19 @@
 import glob
 import json
 import logging
-from os.path import relpath, realpath, dirname, join, normpath, exists, getmtime, isfile
-from os import walk
-from subprocess import Popen, PIPE
-import yaml
 import re
+from os import walk
+from os.path import (dirname, exists, getmtime, isfile, join, normpath,
+                     realpath, relpath)
+from subprocess import PIPE, Popen
+from typing import Dict, List
+
+import yaml
 
 
-def walk_file_tree(root_dir, manifest_name):
+def walk_file_tree(root_dir: str, manifest_name: str):
     logging.info("Beginning directory scan in root '{}'".format(root_dir))
-    paths = []
+    paths: List[str] = []
     for root, dirs, files in walk(root_dir):
         for dir in dirs:
             if dir.startswith("."):
@@ -50,7 +53,7 @@ def walk_file_tree(root_dir, manifest_name):
     return paths
 
 
-def update_archives(paths, archive_directory, archive_command):
+def update_archives(paths: List[str], archive_directory: str, archive_command: str):
     for path in paths:
         logging.debug("Checking result '{}' for updates".format(path))
 
@@ -93,7 +96,7 @@ if __name__ == "__main__":
         ])
 
     # load the config file
-    config = {}
+    config: Dict[str, List[Dict[str, str]]] = {}
     with open("config.json", "r") as config_file:
         config = json.load(config_file)
 
