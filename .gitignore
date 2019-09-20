@@ -1,4 +1,4 @@
-.vscode
+.vscode/[!.]*.json
 data.json
 config.json
 log

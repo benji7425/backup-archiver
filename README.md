@@ -20,9 +20,10 @@ Archives specified glob pattern results that have been modified since the last r
 - Place *backup.yml* manifests underneath your root directory (see [sample.backup.yml](./sample.backup.yml) for an example)
 
 - Install dependencies with `pipenv install`
-- Run manually with `pipenv run main.py`  
-OR
-- Run with your desired task scheduler (I use [cron](https://en.wikipedia.org/wiki/Cron))
+- Run the script...
+    - ...manually with `pipenv run main.py`  
+    OR
+    - ...with your desired task scheduler (I use [cron](https://en.wikipedia.org/wiki/Cron))
 
 This script uses [subprocess](https://docs.python.org/3.6/library/subprocess.html) to interact with 7zip. You will need to make sure you have 7zip installed on your machine in order for this script to be able to use it.
 
