@@ -5,21 +5,22 @@ import re
 from os import walk
 from os.path import (dirname, exists, getmtime, isfile, join, normpath,
                      realpath, relpath)
+from shutil import copyfile
 from subprocess import PIPE, Popen
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import yaml
 
 
-def find_all_backup_paths(root_search_dir_abs: str, manifest_file_name: str) -> List[str]:
+def find_all_backup_paths(root_search_dir_abs: str, manifest_file_name: str) -> Tuple[List[str], List[str]]:
     """Find all the backup paths specified by any manifest file found anywhere within the root directory"""
 
     logging.info(f"Beginning directory scan in root '{root_search_dir_abs}'")
+    manifests_abs: List[str] = []
     results_abs: List[str] = []
 
     # Iteratively walk the file tree
     for current_dir_abs, dirs_rel, files_rel in walk(root_search_dir_abs):
-
         # Remove any directories beginning with a .
         for dir in dirs_rel:
             if dir.startswith("."):
@@ -27,8 +28,9 @@ def find_all_backup_paths(root_search_dir_abs: str, manifest_file_name: str) -> 
 
         # Parse manifest file to get all the include paths
         if (manifest_file_name in files_rel):
-            include_paths_abs = get_include_paths_abs(
-                current_dir_abs, manifest_file_name)
+            manifests_abs.append(join(current_dir_abs, manifest_file_name))
+            include_paths_abs = \
+                get_include_paths_abs(current_dir_abs, manifest_file_name)
 
             if include_paths_abs is None:
                 continue
@@ -45,7 +47,7 @@ def find_all_backup_paths(root_search_dir_abs: str, manifest_file_name: str) -> 
 
     logging.info(f"Finished directory scan in root {root_search_dir_abs}")
 
-    return results_abs
+    return (manifests_abs, results_abs)
 
 
 def get_include_paths_abs(current_dir_abs: str, manifest_file_name: str) -> Optional[List[str]]:
@@ -142,7 +144,7 @@ def get_is_source_modified_since(source_path_abs: str, target_time: float) -> bo
             dir_abs = join(current_dir_abs, dir_rel)
             if getmtime(dir_abs) > target_time:
                 return True
-    
+
     return False
 
 
@@ -157,9 +159,20 @@ def process_configuration(configuration: Dict[str, str]):
     logging.info(f"Begin processing configuration '{configuration_name}'")
 
     # Parse and load all the backup paths for this configuration
-    paths_abs = find_all_backup_paths(root_search_dir_abs, manifest_file_name)
+    manifest_results = \
+        find_all_backup_paths(root_search_dir_abs, manifest_file_name)
+    manifest_paths_abs = manifest_results[0]
+    paths_abs = manifest_results[1]
 
     logging.debug(f"Checking for modification to following paths: {paths_abs}")
+
+    # Copy the manifest files to the output directory
+    for source_manifest_path_abs in manifest_paths_abs:
+        source_manifest_path_rel = \
+            relpath(source_manifest_path_abs, root_search_dir_abs)
+        dest_manifest_path_abs = \
+            normpath(join(archive_directory_abs, source_manifest_path_rel))
+        copyfile(source_manifest_path_abs, dest_manifest_path_abs)
 
     # Update the archives for all the paths in this configuration
     update_archives(
@@ -168,7 +181,8 @@ def process_configuration(configuration: Dict[str, str]):
         archive_directory_abs,
         archive_command_unformatted)
 
-    logging.info(f"Finished checking for modification to paths in {root_search_dir_abs}")
+    logging.info(
+        f"Finished checking for modification to paths in {root_search_dir_abs}")
     logging.info(f"Done processing configuration '{configuration_name}'")
 
 
