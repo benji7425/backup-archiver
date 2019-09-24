@@ -2,7 +2,8 @@ import glob
 import json
 import logging
 import re
-from os import walk
+from copy import deepcopy
+from os import walk, makedirs
 from os.path import (dirname, exists, getmtime, isfile, join, normpath,
                      realpath, relpath)
 from shutil import copyfile
@@ -166,13 +167,26 @@ def process_configuration(configuration: Dict[str, str]):
 
     logging.debug(f"Checking for modification to following paths: {paths_abs}")
 
+    # Redact the password if included in the 7z command
+    configuration_sanitized = deepcopy(configuration)
+    configuration_sanitized["archive_command"] = re.sub(
+        r" -p[^ ]+",
+        " -pREDACTED",
+        configuration_sanitized["archive_command"])
+
+    # Write the configuration to a json file in the output directory
+    with open(join(archive_directory_abs, "configuration.json"), "w") as outfile:
+        json.dump(configuration_sanitized, outfile)
+
     # Copy the manifest files to the output directory
     for source_manifest_path_abs in manifest_paths_abs:
-        source_manifest_path_rel = \
-            relpath(source_manifest_path_abs, root_search_dir_abs)
-        dest_manifest_path_abs = \
-            normpath(join(archive_directory_abs, source_manifest_path_rel))
-        copyfile(source_manifest_path_abs, dest_manifest_path_abs)
+        if exists(source_manifest_path_abs):
+            source_manifest_path_rel = \
+                relpath(source_manifest_path_abs, root_search_dir_abs)
+            dest_manifest_path_abs = \
+                normpath(join(archive_directory_abs, source_manifest_path_rel))
+            makedirs(dirname(dest_manifest_path_abs), exist_ok=True)
+            copyfile(source_manifest_path_abs, dest_manifest_path_abs)
 
     # Update the archives for all the paths in this configuration
     update_archives(
