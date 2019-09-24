@@ -18,15 +18,15 @@ def find_all_backup_paths(root_search_dir_abs: str, manifest_file_name: str) -> 
     results_abs: List[str] = []
 
     # Iteratively walk the file tree
-    for current_dir_abs, dirs, files in walk(root_search_dir_abs):
+    for current_dir_abs, dirs_rel, files_rel in walk(root_search_dir_abs):
 
         # Remove any directories beginning with a .
-        for dir in dirs:
+        for dir in dirs_rel:
             if dir.startswith("."):
-                dirs.remove(dir)
+                dirs_rel.remove(dir)
 
         # Parse manifest file to get all the include paths
-        if (manifest_file_name in files):
+        if (manifest_file_name in files_rel):
             include_paths_abs = get_include_paths_abs(
                 current_dir_abs, manifest_file_name)
 
@@ -38,8 +38,8 @@ def find_all_backup_paths(root_search_dir_abs: str, manifest_file_name: str) -> 
             # Remove a path from the "to-process" list if it's going to be backed up itself
             for path_abs in include_paths_abs:
                 path_rel = relpath(path_abs, current_dir_abs)
-                if path_rel in dirs:
-                    dirs.remove(path_rel)
+                if path_rel in dirs_rel:
+                    dirs_rel.remove(path_rel)
                     logging.debug(
                         f"Ignoring subdirs in '{path_abs}' as it's a backup dir itself")
 
@@ -100,7 +100,6 @@ def update_archives(root_search_dir_abs: str, paths_abs: List[str], archive_dire
 
         # Fetch last modified times for the origin path and archive file path
         source_path_rel = relpath(source_path_abs, root_search_dir_abs)
-        source_modified_time = get_source_last_modified_time(source_path_abs)
         archive_path_abs = join(archive_directory, source_path_rel)
         archive_modified_time = \
             getmtime(archive_path_abs + ".7z") \
@@ -108,7 +107,7 @@ def update_archives(root_search_dir_abs: str, paths_abs: List[str], archive_dire
             else -1
 
         # Update the archive only if the origin has been modified since the archive was last written
-        if(source_modified_time > archive_modified_time):
+        if get_is_source_modified_since(source_path_abs, archive_modified_time):
             logging.debug(f"Updating archive for path {source_path_abs}")
 
             # Archive with 7zip
@@ -129,8 +128,22 @@ def update_archives(root_search_dir_abs: str, paths_abs: List[str], archive_dire
             logging.debug(f"No updates found for '{source_path_abs}'")
 
 
-def get_source_last_modified_time(path_abs: str) -> float:
-    return getmtime(path_abs)
+def get_is_source_modified_since(source_path_abs: str, target_time: float) -> bool:
+    if getmtime(source_path_abs) > target_time:
+        return True
+
+    for current_dir_abs, dirs_rel, files_rel in walk(source_path_abs):
+        for file_rel in files_rel:
+            file_abs = join(current_dir_abs, file_rel)
+            if getmtime(file_abs) > target_time:
+                return True
+
+        for dir_rel in dirs_rel:
+            dir_abs = join(current_dir_abs, dir_rel)
+            if getmtime(dir_abs) > target_time:
+                return True
+    
+    return False
 
 
 def process_configuration(configuration: Dict[str, str]):
