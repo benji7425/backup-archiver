@@ -2,7 +2,7 @@
     "configurations": [
         {
             "name": "my-backup-configuration",
-            "archive_command": "7z a \"{archive}.7z\" \"{directory}\" -t7z -m5=lzma2 -aoa",
+            "archive_command": "7z u \"{archive}.7z\" \"{directory}\" -t7z -m5=lzma2 -ssw",
             "archive_directory": "C:\\backup-archives",
             "root_search_dir": "C:\\my-files",
             "manifest_file_name": "backup.yml"
