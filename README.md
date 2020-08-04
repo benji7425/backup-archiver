@@ -11,17 +11,17 @@ Archives specified glob pattern results that have been modified since the last r
 
 ## Getting started
 ### Prerequisites
-- [Python 3.6](https://www.python.org/) installed
+- [Python 3](https://www.python.org/) installed (written with 3.6, any sensible 3.x should be fine)
 - [Pipenv](https://pipenv.readthedocs.io/en/latest/) pip module installed
 - [7zip](https://www.7-zip.org/download.html) (Windows) or [p7zip](http://p7zip.sourceforge.net/) (Linux) installed
 
 ### Setup
-- Configure your settings in config.json (see [sample.config.json](./sample.config.json) for an example)
-- Place *backup.yml* manifests underneath your root directory (see [sample.backup.yml](./sample.backup.yml) for an example)
+- Configure your settings in config.json (see [config.sample.json](./config.sample.json) for an example)
+- Place *backup.yml* manifests underneath your root directory (see [backup.sample.yml](./backup.sample.yml) for an example)
 
 - Install dependencies with `pipenv install`
 - Run the script...
-    - ...manually with `pipenv run main.py`  
+    - ...manually with `pipenv run python main.py`  
     OR
     - ...with your desired task scheduler (I use [cron](https://en.wikipedia.org/wiki/Cron))
 
