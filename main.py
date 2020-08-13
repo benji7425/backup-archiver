@@ -110,7 +110,7 @@ def update_archives(root_search_dir_abs: str, paths_abs: List[str], archive_dire
             else -1
 
         # Update the archive only if the origin has been modified since the archive was last written
-        if get_is_source_modified_since(source_path_abs, archive_modified_time):
+        if get_is_contents_modified_since(source_path_abs, archive_modified_time):
             logging.debug(f"Updating archive for path {source_path_abs}")
 
             # Archive with 7zip
@@ -131,19 +131,21 @@ def update_archives(root_search_dir_abs: str, paths_abs: List[str], archive_dire
             logging.debug(f"No updates found for '{source_path_abs}'")
 
 
-def get_is_source_modified_since(source_path_abs: str, target_time: float) -> bool:
-    if getmtime(source_path_abs) > target_time:
+def get_is_contents_modified_since(path_abs: str, target_time: float) -> bool:
+    """Determine whether the contents of a directory have been modified since a given date"""
+
+    if getmtime(path_abs) > target_time:
         return True
 
-    for current_dir_abs, dirs_rel, files_rel in walk(source_path_abs):
+    for current_dir_abs, dirs_rel, files_rel in walk(path_abs):
         for file_rel in files_rel:
             file_abs = join(current_dir_abs, file_rel)
-            if getmtime(file_abs) > target_time:
+            if exists(file_abs) and getmtime(file_abs) > target_time:
                 return True
 
         for dir_rel in dirs_rel:
             dir_abs = join(current_dir_abs, dir_rel)
-            if getmtime(dir_abs) > target_time:
+            if exists(dir_abs) and getmtime(dir_abs) > target_time:
                 return True
 
     return False
