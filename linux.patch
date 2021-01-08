@@ -1,0 +1,17 @@
+diff --git a/src/backup-archiver.py b/src/backup-archiver.py
+index 5cedecb..f11c66e 100644
+--- a/src/backup-archiver.py
++++ b/src/backup-archiver.py
+@@ -234,7 +234,11 @@ if __name__ == "__main__":
+ 
+     # Load the config file
+     config: Dict[str, List[Dict[str, str]]] = {}
+-    with open("config.json", "r") as config_file:
++    from os.path import join
++
++    from xdg import BaseDirectory as xdg
++
++    with open(join(xdg.xdg_config_home, "backup-archiver/config.json"), "r") as config_file:
+         config = json.load(config_file)
+ 
+     configurations: List[Dict[str, str]] = config["configurations"]
